@@ -1,23 +1,33 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './App.css';
 
 function App() {
+  const [repos, setRepos] = useState([]);
+
+  useEffect(() => {
+    const fetchRepos = async () => {
+      try {
+        const response = await axios.get('https://api.github.com/users/vophihungvn/repos');
+        setRepos(response.data);
+      } catch (error) {
+        console.error('Error fetching repositories:', error);
+      }
+    };
+
+    fetchRepos();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>List of GitHub Repositories</h1>
+      <ul>
+        {repos.map(repo => (
+          <li key={repo.id}>
+            <a href={repo.html_url} target="_blank" rel="noopener noreferrer">{repo.name}</a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
